@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platforma Quizowa - Tryb Liniowy</title>
+    <title>Quiz TV - Wczytywanie Ręczne (FINALNA POPRAWKA)</title>
     <style>
         :root {
             --bg-dark: #1e1e24;
@@ -98,7 +98,7 @@
         .p-name { font-weight: 500; }
         .p-score { font-weight: bold; font-size: 1.2rem; color: var(--highlight); }
 
-        /* MAIN CONTENT (Question Area) */
+        /* QUESTION AREA */
         .main-content {
             flex: 1;
             padding: 40px;
@@ -128,23 +128,19 @@
             margin-bottom: 40px;
             line-height: 1.3;
             font-weight: 600;
-            min-height: 150px; /* Zapobiega skakaniu */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-height: 150px;
+            display: flex; align-items: center; justify-content: center;
         }
 
+        /* Odpowiedź ma tylko podstawowe style, ukrywanie i pokazywanie będzie w JS */
         .a-text {
             font-size: 2rem;
             color: var(--success);
             margin-bottom: 40px;
-            min-height: 60px;
             font-weight: bold;
-            opacity: 0;
-            transition: opacity 0.3s;
+            display: none; /* Domyślnie ukryty, manipulowany w JS */
+            padding-top: 10px; /* Estetyczny odstęp, gdy się pojawi */
         }
-
-        .a-text.visible { opacity: 1; }
 
         .controls {
             display: flex;
@@ -178,7 +174,7 @@
             top: 0; left: 0; width: 100%; height: 100%;
             background-color: var(--bg-dark);
             z-index: 50;
-            display: flex;
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -277,27 +273,24 @@
     </div>
 
     <header>
-        <h1>Quiz</h1>
+        <h1>Quiz Tournament</h1>
         <div>
-            <button class="btn btn-reset" onclick="resetApp()">Nowa Gra (Reset)</button>
+            <button class="btn btn-reset" onclick="resetApp()">Nowa Gra</button>
             <button class="btn btn-end" onclick="endGame()">Zakończ i Podium</button>
         </div>
     </header>
 
     <div class="container">
-        <div class="sidebar" id="participantsList">
-            </div>
+        <div class="sidebar" id="participantsList"></div>
 
         <div class="main-content">
-            <div class="question-box">
-                <div class="q-counter" id="qCounter">Pytanie 1 / 10</div>
-                <div class="q-text" id="qText">Wybierz uczestnika, aby rozpocząć...</div>
-                <div class="a-text" id="aText">Tutaj pojawi się odpowiedź</div>
+            <div class="question-box" id="questionBox">
+                <div class="q-counter" id="qCounter">...</div>
+                <div class="q-text" id="qText">Wczytaj pytania, aby rozpocząć grę!</div>
+                <div class="a-text" id="aText"></div>
                 
-                <div class="controls" id="controlsArea">
-                    </div>
-                
-                <div class="hint-text" id="hintText">Kliknij osobę z listy po lewej, która zgłasza się do odpowiedzi.</div>
+                <div class="controls" id="controlsArea"></div>
+                <div class="hint-text" id="hintText"></div>
             </div>
         </div>
     </div>
@@ -309,7 +302,6 @@
     </div>
 
     <script>
-        // --- DANE STARTOWE ---
         const initialParticipants = [
             "Pan Robert Ciupka", "Pan Franciszek Dzida", "Pani Martyna Dziech",
             "Pan Michał Filimanowski", "Pan Jakub Filip", "Pani Magda Głąbek",
@@ -329,19 +321,20 @@
 
         // --- INIT ---
         window.onload = () => {
-            loadState();
+            loadLocalState();
             
-            // Czy mamy pytania w pamięci?
             if (state.questions && state.questions.length > 0) {
-                document.getElementById('startScreen').style.display = 'none';
                 renderGame();
             } else {
-                // Jeśli nie, pokazujemy ekran startowy
-                state.participants = initialParticipants.map(name => ({ name, score: 0 }));
+                document.getElementById('startScreen').style.display = 'flex';
+                if (state.participants.length === 0) {
+                    state.participants = initialParticipants.map(name => ({ name, score: 0 }));
+                }
+                renderParticipants();
             }
         };
 
-        // Obsługa wczytania pliku
+        // Obsługa wczytania pliku (używamy FileReader, który działa lokalnie)
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
@@ -350,23 +343,30 @@
             reader.onload = function(e) {
                 const text = e.target.result;
                 const lines = text.split('\n');
-                state.questions = lines
+                
+                const newQuestions = lines
                     .filter(line => line.includes(';'))
                     .map(line => {
                         const [q, a] = line.split(';');
                         return { text: q.trim(), answer: a.trim() };
                     });
                 
-                state.currentQuestionIndex = 0;
-                saveState();
+                if (newQuestions.length === 0) {
+                     alert("Plik jest pusty lub ma nieprawidłowy format (pytanie;odpowiedź).");
+                     return;
+                }
                 
+                state.questions = newQuestions;
+                state.currentQuestionIndex = 0;
+                
+                saveLocalState();
                 document.getElementById('startScreen').style.display = 'none';
                 renderGame();
             };
             reader.readAsText(file);
         });
 
-        // --- RENDEROWANIE GRY ---
+        // --- RENDEROWANIE ---
         function renderGame() {
             renderParticipants();
             renderCurrentQuestion();
@@ -389,79 +389,79 @@
         }
 
         function renderCurrentQuestion() {
-            // Sprawdź czy koniec pytań
+            const aText = document.getElementById('aText');
+            const qText = document.getElementById('qText');
+            const qCounter = document.getElementById('qCounter');
+            const controls = document.getElementById('controlsArea');
+            const hint = document.getElementById('hintText');
+
+            if (!state.questions || state.questions.length === 0) {
+                 qText.innerText = "Wczytaj pytania, aby rozpocząć grę!";
+                 qCounter.innerText = "STATUS";
+                 controls.innerHTML = '';
+                 hint.innerText = '';
+                 aText.style.display = 'none'; // Ukrywamy brutalnie
+                 return;
+            }
+
             if (state.currentQuestionIndex >= state.questions.length) {
-                endGame();
+                qText.innerText = "Wszystkie pytania wyczerpane!";
+                qCounter.innerText = "KONIEC GRY";
+                controls.innerHTML = '';
+                hint.innerText = 'Kliknij "Zakończ i Podium" aby zobaczyć wyniki.';
+                aText.style.display = 'none';
                 return;
             }
 
             const q = state.questions[state.currentQuestionIndex];
             
-            // Tekst licznika
-            document.getElementById('qCounter').innerText = `Pytanie ${state.currentQuestionIndex + 1} z ${state.questions.length}`;
+            // KLUCZOWA POPRAWKA JS: Ustawiamy styl na 'none' zanim zmienimy tekst
+            aText.style.display = 'none';
             
-            // Treść pytania
-            document.getElementById('qText').innerText = q.text;
-            
-            // Odpowiedź (ukryta na start)
-            const aText = document.getElementById('aText');
+            qCounter.innerText = `Pytanie ${state.currentQuestionIndex + 1} z ${state.questions.length}`;
+            qText.innerText = q.text;
             aText.innerText = q.answer;
-            aText.classList.remove('visible');
-
-            // Przyciski
-            const controls = document.getElementById('controlsArea');
-            const hint = document.getElementById('hintText');
 
             if (state.selectedParticipantIndex === null) {
-                // Nie wybrano osoby -> brak przycisków
                 controls.innerHTML = '';
-                hint.innerText = "Wybierz osobę z listy, aby odblokować odpowiedź.";
-                hint.style.display = 'block';
+                hint.innerText = "Wybierz osobę z listy, aby odblokować przycisk odpowiedzi.";
             } else {
-                // Wybrano osobę -> Pokaż przycisk "Pokaż odpowiedź"
                 controls.innerHTML = `
                     <button class="btn btn-large btn-show" onclick="revealAnswer()">Pokaż odpowiedź</button>
                 `;
-                hint.style.display = 'none';
+                hint.innerText = `Osoba odpowiadająca: ${state.participants[state.selectedParticipantIndex].name}`;
             }
         }
 
-        // --- INTERAKCJE ---
+        // --- LOGIKA ---
         function selectParticipant(index) {
-            // Można wybrać osobę tylko jeśli gra trwa
             if (state.currentQuestionIndex >= state.questions.length) return;
-
-            // Jeśli już odpowiadaliśmy (widoczne przyciski +/-), zablokuj zmianę osoby, żeby nie oszukiwać?
-            // W tym prostym modelu pozwalamy zmieniać osobę dopóki nie klikniemy punktów.
-            
             state.selectedParticipantIndex = index;
-            saveState();
+            saveLocalState();
             renderGame();
         }
 
         function revealAnswer() {
-            document.getElementById('aText').classList.add('visible');
+            // KLUCZOWA POPRAWKA JS: Pokaż, używając 'block'
+            document.getElementById('aText').style.display = 'block'; 
             const controls = document.getElementById('controlsArea');
             controls.innerHTML = `
                 <button class="btn btn-large btn-good" style="display:inline-block" onclick="submitScore(2)">Dobrze (+2)</button>
                 <button class="btn btn-large btn-bad" style="display:inline-block" onclick="submitScore(-1)">Źle (-1)</button>
             `;
+            document.getElementById('hintText').innerText = 'Oceń odpowiedź i przejdź do kolejnego pytania.';
         }
 
         function submitScore(points) {
             if (state.selectedParticipantIndex !== null) {
                 state.participants[state.selectedParticipantIndex].score += points;
-                
-                // Przejdź do następnego pytania
                 state.currentQuestionIndex++;
-                state.selectedParticipantIndex = null; // Odznaczamy osobę
-                
-                saveState();
+                state.selectedParticipantIndex = null;
+                saveLocalState();
                 renderGame();
             }
         }
 
-        // --- PODIUM I KONIEC ---
         function endGame() {
             const podiumOverlay = document.getElementById('podium');
             const stage = document.getElementById('podiumStage');
@@ -488,21 +488,31 @@
             `;
         }
 
-        // --- ZAPIS / ODCZYT ---
-        function saveState() {
-            localStorage.setItem('quiz_linear_state', JSON.stringify(state));
+        // --- SAVE/LOAD ---
+        function saveLocalState() {
+            localStorage.setItem('quiz_manual_state', JSON.stringify(state));
         }
 
-        function loadState() {
-            const saved = localStorage.getItem('quiz_linear_state');
+        function loadLocalState() {
+            const saved = localStorage.getItem('quiz_manual_state');
             if (saved) {
-                state = JSON.parse(saved);
+                const loadedState = JSON.parse(saved);
+                
+                if (loadedState.participants.length === initialParticipants.length) {
+                    state = loadedState;
+                } else {
+                    state.participants = initialParticipants.map(name => ({ name, score: 0 }));
+                    state.questions = loadedState.questions || [];
+                    state.currentQuestionIndex = 0;
+                }
+            } else {
+                 state.participants = initialParticipants.map(name => ({ name, score: 0 }));
             }
         }
 
         function resetApp() {
-            if(confirm("Zresetować wszystko? Wymagane ponowne wgranie pytań.")) {
-                localStorage.removeItem('quiz_linear_state');
+            if(confirm("Czy na pewno chcesz zresetować grę? Stracisz wszystkie punkty i zaczniesz od pierwszego pytania.")) {
+                localStorage.removeItem('quiz_manual_state');
                 location.reload();
             }
         }
