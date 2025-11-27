@@ -1,0 +1,47 @@
+Jak nazywamy zmianę położenia ciała względem układu odniesienia?;Ruch
+Jednostką siły w układzie SI jest?;Newton
+Jak nazywa się rodzaj zderzenia, w którym energia kinetyczna układu zostaje zachowana?;Zderzenie sprężyste
+Wymień trzy stany skupienia materii.;Stały, ciekły i gazowy
+Czym charakteryzuje się ruch jednostajny prostoliniowy?;Stałą prędkością i prostym torem
+Co jest miarą bezwładności ciała?;Masa
+Jak nazywa się wzajemne oddziaływanie cząsteczek, które powoduje utrzymanie kształtu ciał stałych?;Spójność (kohezja)
+Co jest źródłem energii kinetycznej?;Ruch ciała
+Co jest źródłem energii potencjalnej grawitacji?;Położenie ciała w polu grawitacyjnym
+Podaj definicję pracy w sensie fizycznym.;Iloczyn siły i przesunięcia w kierunku działania siły
+Jaką nazwę nosi przemiana termodynamiczna, w której ciśnienie gazu pozostaje stałe, a jego objętość i temperatura ulegają zmianie?;Przemiana izobaryczna
+Jaka jest jednostka mocy w układzie SI?;Wat
+W jakiej temperaturze woda zamarza w skali Celsjusza?;0 stopni Celsjusza
+W jakim zjawisku fizycznym atomy lub cząsteczki mieszają się spontanicznie?;Dyfuzja
+Jak nazywamy proces przejścia ciała ze stanu ciekłego w stan gazowy?;Parowanie
+Jak nazywamy proces przejścia ciała ze stanu gazowego w stan ciekły?;Skraplanie (kondensacja)
+Jak nazywamy proces topnienia?;Przejście ze stanu stałego w ciekły
+Jak nazywamy ilość ciepła potrzebną do zmiany temperatury jednostki masy substancji o 1 stopień?;Ciepło właściwe
+Co jest miarą pracy wykonanej podczas przenoszenia jednostkowego ładunku elektrycznego między dwoma punktami w polu elektrycznym?;Napięcie elektryczne (lub różnica potencjałów)
+W jakim stanie skupienia cząsteczki mają największą swobodę ruchu?;Gazowym
+Jak nazywa się przyrząd służący do pomiaru temperatury?;Termometr
+Jak nazywa się sposób przekazywania ciepła przez drgania cząsteczek bez ich przemieszczania?;Przewodnictwo cieplne
+W jakim materiale ciepło jest przekazywane głównie przez konwekcję?;Ciecze i gazy
+Czy próżnia jest dobrym przewodnikiem ciepła?;Nie (ciepło przekazywane tylko przez promieniowanie)
+Jak nazywa się zasada fizyczna mówiąca, że energia nie ginie, lecz ulega przemianom?;Zasada zachowania energii
+Jaka jest definicja siły tarcia?;Siła przeciwna do kierunku ruchu, powstająca na styku powierzchni
+Co to jest elektrostatyka?;Dział fizyki badający oddziaływania spoczywających ładunków elektrycznych
+Jak nazywa się najmniejsza jednostka ładunku elektrycznego?;Ładunek elementarny (np. ładunek elektronu)
+Jaka jest jednostka ładunku elektrycznego w układzie SI?;Kulomb
+Jakie są rodzaje ładunków elektrycznych?;Dodatnie i ujemne
+Co się dzieje, gdy dwa ładunki jednoimienne znajdą się blisko siebie?;Odpierają się
+Co się dzieje, gdy dwa ładunki różnoimienne znajdą się blisko siebie?;Przyciągają się
+W wyniku jakiego procesu ciało może uzyskać ładunek elektryczny (np. pocieranie wełny o ebonit)?;Elektryzowanie (tarciem)
+Jaka jest rola uziemienia w ochronie przed wyładowaniami atmosferycznymi?;Odprowadzenie ładunku elektrycznego do ziemi
+Jak nazywamy substancje, które łatwo przewodzą prąd elektryczny (np. metale)?;Przewodniki
+Jak nazywamy substancje, które nie przewodzą prądu elektrycznego (np. plastik, szkło)?;Izolatory (dielektryki)
+Czy w atomie liczba protonów jest równa liczbie elektronów, gdy atom jest elektrycznie obojętny?;Tak
+Co to jest siła wyporu?;Siła działająca na ciało zanurzone w płynie, skierowana w górę
+Kto sformułował prawo dotyczące siły wyporu?;Archimedes
+Jednostką ciśnienia w układzie SI jest?;Paskal
+Czym mierzymy ciśnienie atmosferyczne?;Barometrem
+Co opisuje pierwsza zasada dynamiki Newtona?;Stan spoczynku lub ruch jednostajny prostoliniowy
+Jaka jest definicja drugiej zasady dynamiki Newtona (wzór)?;F = m * a (Siła równa się masa razy przyspieszenie)
+Co opisuje trzecia zasada dynamiki Newtona?;Akcja i reakcja (Siły wzajemnego oddziaływania są równe co do wartości, mają ten sam kierunek, ale przeciwne zwroty)
+Co dzieje się z gęstością cieczy, gdy zwiększamy jej temperaturę (zazwyczaj)?;Maleje (zmniejsza się)
+Jak nazywa się przejście fazowe ze stanu stałego bezpośrednio w gazowy (z pominięciem ciekłego)?;Sublimacja
+Co jest przyczyną prądów konwekcyjnych w płynach?;Różnica gęstości spowodowana różnicą temperatur
